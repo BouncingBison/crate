@@ -1,0 +1,53 @@
+
+
+// mongoose.connect('mongodb://localhost/tracklist');
+
+
+// //instantiate mongoose-gridfs
+// var gridfs = require('mongoose-gridfs')({
+//     collection: 'tracks',
+//     model: 'song',
+//     mongooseConnection: mongoose.connect
+// });
+
+// //obtain a model
+// Song = gridfs.model;
+
+// //create or save a file
+// Song.write({
+//         filename: 'sample.txt',
+//         contentType: 'text/plain'
+//     },
+//     fs.createReadStream('/some/path/sample.txt'),
+//     function(error, createdFile) {
+
+//     });
+
+// //for larger file size
+// //read a file and receive a stream
+// var stream = Song.readById();
+
+// //for smaller file size
+// //read a file and receive a buffer
+
+// Song.readById(objectid, function(error, buffer) {
+
+// });
+
+// //remove file details and its content from gridfs
+// Song.unlinkById(objectid, function(error, unlinkedAttachment) {
+
+// });
+
+
+
+
+
+
+
+1 -> form 
+2 -> parse and designate individual IDs
+3 -> stream these into individually into database, adding like items into documents together
+4 -> show items in DB  
+5 -> call items by id into the write/read stream 
+6 -> hand to audio module to play on speakers 

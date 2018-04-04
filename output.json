@@ -1,0 +1,93 @@
+ GridFSBucketWriteStream {
+     bucket: GridFSBucket {
+         domain: null,
+         _events: {},
+         _eventsCount: 0,
+         _maxListeners: 0,
+         s: {
+             db: [Object],
+             options: [Object],
+             _chunksCollection: [Object],
+             _filesCollection: [Object],
+             checkedIndexes: false,
+             calledOpenUploadStream: true,
+             promiseLibrary: [Function: Promise]
+         }
+     },
+     chunks: Collection {
+         s: {
+             pkFactory: [Object],
+             db: [Object],
+             topology: [Object],
+             dbName: 'trackDB',
+             options: [Object],
+             namespace: 'trackDB.tracks.chunks',
+             readPreference: [Object],
+             slaveOk: true,
+             serializeFunctions: undefined,
+             raw: undefined,
+             promoteLongs: undefined,
+             promoteValues: undefined,
+             promoteBuffers: undefined,
+             internalHint: null,
+             collectionHint: null,
+             name: 'tracks.chunks',
+             promiseLibrary: [Function: Promise],
+             readConcern: undefined
+         }
+     },
+     filename: ['dedication', 'king', 'boyz', 'motivation'],
+     files: Collection {
+         s: {
+             pkFactory: [Object],
+             db: [Object],
+             topology: [Object],
+             dbName: 'trackDB',
+             options: [Object],
+             namespace: 'trackDB.tracks.files',
+             readPreference: [Object],
+             slaveOk: true,
+             serializeFunctions: undefined,
+             raw: undefined,
+             promoteLongs: undefined,
+             promoteValues: undefined,
+             promoteBuffers: undefined,
+             internalHint: null,
+             collectionHint: null,
+             name: 'tracks.files',
+             promiseLibrary: [Function: Promise],
+             readConcern: undefined
+         }
+     },
+     options: { chunkSizeBytes: 261120 },
+     done: false,
+     id: 5 a8a21a92b7d70cdbd5c9418,
+     chunkSizeBytes: 261120,
+     bufToStore: < Buffer 00 e0 d2 01 01 00 00 00 e0 0e 04 00 00 00 00 00 7 f 00 00 00 00 00 00 00 07 00 00 00 01 00 00 00 28 00 d5 01 01 00 00 00 00 00 00 00 00 00 00 00 db ff... > ,
+     length: 0,
+     md5: Hash {
+         _handle: {},
+         _options: undefined,
+         writable: true,
+         readable: true
+     },
+     n: 0,
+     pos: 0,
+     state: {
+         streamEnd: false,
+         outstandingRequests: 0,
+         errored: false,
+         aborted: false,
+         promiseLibrary: [Function: Promise]
+     },
+     _events: {
+         unpipe: [Function: onunpipe],
+         drain: [Function],
+         error: [Function: onerror],
+         close: {
+             [Function: g] listener: [Function: onclose] },
+         finish: {
+             [Function: g] listener: [Function: onfinish] }
+     },
+     _eventsCount: 5
+ }
