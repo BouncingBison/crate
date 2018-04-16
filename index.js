@@ -7,37 +7,141 @@
 // var assert     = require('assert'                          );
 var express = require('express');
 var app = express();
-var mongoose = require('mongoose');
-var Grid = require('gridfs-stream');
-var gridform = require('gridform');
+var uploadEngine = express.Router();
 var fs = require('fs');
-var formidable = require('gridform/node_modules/formidable');
-var assert = require('assert');
-var http = require('http');
 var util = require('util');
+var mongodb = require('mongodb'),
+    MongoClient = require('mongodb').MongoClient,
+    Server = require('mongodb').Server,
+    // ReplSetServers = require('mongodb').ReplSetServers,
+    ObjectID = require('mongodb').ObjectID,
+    Binary = require('mongodb').Binary,
+    // GridStore = require('mongodb').GridStore,
+    GridFSBucket = require('mongodb').GridFSBucket,
+    Code = require('mongodb').Code,
+    // Grid = require('gridfs-stream'),
+    gridform = require('gridform'),
+    assert = require('assert'),
+    mongoURI = 'mongodb://crateTest:password@ds125489.mlab.com:25489/crate',
+    test = require('assert');
 
 
-const mongoURI = 'mongodb://crateTest:password@ds125489.mlab.com:25489/crate';
+// ======================== express routing code =============================
+var exphbs = require('express-handlebars')
+var path = require('path');
+var bodyParser = require('body-parser')
 
-var db = mongoose.connect(mongoURI);
+//For BodyParser
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.text());
+app.use(bodyParser.json({ type: "application/vnd.api+json" }));
+app.use(express.static(path.join(__dirname, '/views/')));
+app.use(express.static(path.join(__dirname, '/views/layouts/css')));
+// app.use(express.static(path.join(__dirname, '/views/layouts/css')));
 
-mongoose.Promise = global.Promise;
+app.set('views', './views');
+app.engine('handlebars', exphbs({
+    defaultLayout: 'main',
+    partialsDir: path.join(__dirname, '/views/'),
+    layoutsDir: path.join(__dirname, 'views/layouts'),
+}));
+app.set('view engine', 'handlebars');
+// ======================== express routing code =============================
 
-Grid.mongo = mongoose.mongo;
+var formidable = require('gridform/node_modules/formidable');
 
-var connection = mongoose.connection;
+const { Readable } = require('stream');
 
-connection.on('error', console.error.bind(console, 'connection error:'));
+/*
+gridform uses a specific version of (1.0.14) 
+however formidable has been updated (slightly)
+ and i am updated the formidable used in 
+ gridform to work with versions of Node 6.x and beyond.
+ The original version of formidable used in gridform is listed below and 
+ goes within that modules package.json 
+ "raw": "formidable@1.0.14"
+ */
 
-var mongo = require('mongodb')
-var gridform = require('gridform');
+// // Database Name
+// const dbName = 'crate';
+// const testUsername = 'user1';
 
-// assuming you've already created a db instance and opened it
-gridform.db = db;
-gridform.mongo = mongo;
 
-// in your http server
-var app = http.Server(function(req, res) {
+// next step with this is to modularize the whole connection in order to 
+// make a db object accessible to 
+var db = require('./mongoObject.js');
+
+
+db.startup()
+    // db.toString();
+
+
+var ct = './ct.mp3';
+// function makeStrings() {
+//     console.log(ct);
+//     ct.toString();
+//     console.log(ct);
+// }
+// makeStrings()
+
+
+
+function upload(db, ct) {
+
+
+    // db = db.client.db(dbName);
+
+    console.log("starting bucket");
+    let bucket = new GridFSBucket({
+        bucketName: 'user2'
+    });
+
+
+    const readableTrackStream = new Readable();
+    readableTrackStream.push(ct);
+    readableTrackStream.push(null);
+
+    let uploadStream = bucket.openUploadStream(ct);
+    readableTrackStream.pipe(uploadStream)
+
+    uploadStream.on('data', (chunk) => {
+        console.log('data')
+    })
+
+    uploadStream.on('error', (chunk) => {
+        console.log('err');
+    })
+
+    uploadStream.on('end', () => {
+        console.log('end');
+    })
+
+}
+
+upload(db, ct);
+
+
+// // binding the upload URL to the Express Router 
+// app.use("/upload", uploadEngine);
+// // console.log("GLOBAL", MongoClient);
+// // Reuse database object in request handlers
+// app.get("/", function(req, res, db) {
+
+
+
+
+// });
+
+
+
+app.post('/upload', function(req, res, connection) {
+
+    var something = new MongoClient();
+
+    // assuming you've already created a db instance and opened it
+    gridform.db = something.db;
+    gridform.mongo = mongo;
 
     // create a gridform
     var form = gridform();
@@ -52,234 +156,30 @@ var app = http.Server(function(req, res) {
 
     // parse normally
     form.parse(req, function(err, fields, files) {
-
         // use files and fields as you do today
         var file = files.upload;
-
         file.name // the uploaded file name
         file.type // file type per [mime](https://github.com/bentomas/node-mime)
         file.size // uploaded file size (file length in GridFS) named "size" for compatibility
         file.path // same as file.name. included for compatibility
         file.lastModified // included for compatibility
-
-        // files contain additional gridfs info
+            // files contain additional gridfs info
         file.root // the root of the files collection used in MongoDB ('fs' here means the full collection in mongo is named 'fs.files')
         file.id // the ObjectId for this file
-
+        console.log("the file -->  " + file);
     });
+
+})
+
+
+
+app.use(function(req, res, next) {
+    res.status(404).send("Can not find page")
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// //  connection test function 
-// connection.once('open', function() {
-
-
-//     var gfs = Grid(connection.db, connection.mongo);
-
-
-//     var trackSchema = mongoose.Schema({
-//         title: String,
-//         length: Number,
-//         added: { type: Date, default: Date.now }
-//     });
-
-
-//     var Tracks = mongoose.model('Tracks', trackSchema);
-
-
-//     var silence = new Tracks({ title: 'exposed', length: 11 });
-//     var noise = new Tracks({ title: 'dessert', length: 21 });
-
-//     console.log(noise.title); // 'Silence'
-
-// gfs.collection('tester').insert(silence);
-// // writestream 
-// var gridform = require('gridform');
-// gridform.db = db;
-// gridform.mongo = mongo;
-// var form = gridform();
-// returns a custom IncomingForm
-
-// assert(form instanceof formidable.IncomingForm);
-
-/*
-
-The gridfs - stream module exports a constructor that accepts an open mongodb
- - native db and the mongodb - 
-native driver you are using.
-The db must already be opened before calling createWriteStream or createReadStream.
-
-Now we 're ready to start streaming.
-
-    
-The writeStream has additional methods:
-destroy([err]): Destroy the writeStream as soon as possible: stop writing incoming data,
- close the _store. An error event will be emitted, as well as a close event. 
- It's up to you to cleanup the GridStore if it's not desired to keep half written files in GridFS 
- (the close event returns a GridStore file which can be used to delete the file, or mark it failed).
-*/
-
-
-
-// var writestream = gfs.createWriteStream(noise);
-// fs.createReadStream(mongoURI).pipe(writestream);
-
-
-// // pull apart and see options 
-// var readstream = gfs.createReadStream({
-//     _id: '50e03d29edfdc00d34000001',
-//     range: {
-//         startPos: 100,
-//         endPos: 500000
-//     }
-// });
-
-
-//   All file meta-data (file name, upload date, contentType, etc) are stored in a
-//    special mongodb collection separate from the actual file data.
-// //     This collection can be queried directly:    
-// var gfs = Grid(conn.db);
-// gfs.files.find({ filename: 'myImage.png' }).toArray(function(err, files) {
-// if (err)...
-// console.log(files);
-// })
-
-// });
-
-
-//  stock gridform data
-
-// var mongo = require('mongodb');
-// var Grid = require('gridfs-stream');
-
-// // create or use an existing mongodb-native db instance
-// // var db = new mongo.Db('yourDatabaseName', new mongo.Server("127.0.0.1", 27017));
-// var gfs = Grid(db, mongo);
-
-// // streaming to gridfs
-// var writestream = gfs.createWriteStream({
-//     filename: 'my_file.txt'
-// });
-// fs.createReadStream('/some/path').pipe(writestream);
-
-// // streaming from gridfs
-// var readstream = gfs.createReadStream({
-//     filename: 'my_file.txt'
-// });
-
-// //error handling, e.g. file does not exist
-// readstream.on('error', function(err) {
-//     console.log('An error occurred!', err);
-//     throw err;
-// });
-
-// readstream.pipe(response);
-
-// // var writestream = gfs.createWriteStream([options]);
-// // fs.createReadStream('/some/path').pipe(writestream);
-
-// var app = http.createServer(function(req, res) {
-
-//     connection.once('open', function(err, db) {
-
-
-//         var gridform = require('gridform');
-//         gridform.db = db;
-//         gridform.mongo = mongo;
-//         var form = gridform();
-
-//         // returns a custom IncomingForm
-//         assert(form instanceof formidable.IncomingForm);
-//         // this returns AssertionError: false == true
-//         console.log('assert passed');
-
-//         // optionally store per-file metadata
-//         form.on('fileBegin', function(name, file) {
-//                 console.log('mmmeta');
-//                 file.metadata = 'so meta'
-//             })
-//             // parse normally
-//         form.parse(req, function(err, fields, files) {
-//             console.log('start parse');
-//             // use files and fields as you do today
-//             var file = './ct.mp3';
-//             console.log(file);
-//             file.name // the uploaded file name
-//             file.type // file type per [mime](https://github.com/bentomas/node-mime)
-//             file.size // uploaded file size (file length in GridFS) named "size" for compatibility
-//             file.path // same as file.name. included for compatibility
-//             file.lastModified // included for compatibility
-//                 // files contain additional gridfs info
-//             file.root // the root of the files collection used in MongoDB ('fs' here means the full collection in mongo is named 'fs.files')
-//             file.id // the ObjectId for this file
-
-//         });
-
-//         var writestream = gfs.createWriteStream([options]);
-//         fs.createReadStream('mongodb://crateTest:password@ds125489.mlab.com:25489/crate').pipe(file);
-
-//     });
-
-
-
-
-
-
-//     // show a file upload form
-//     console.log("setting up generic form");
-//     res.writeHead(200, { 'content-type': 'text/html' });
-//     res.end(
-//         '<form action="/upload" enctype="multipart/form-data" method="post">' +
-//         '<input type="text" name="title"><br>' +
-//         '<input type="file" name="upload" multiple="multiple"><br>' +
-//         '<input type="submit" value="Upload">' +
-//         '</form>'
-//     );
-// }).listen(3006)
+app.listen(5000, function(err) {
+    if (!err)
+        console.log("Navigate to localhost:5000");
+    else console.log(err)
+
+});

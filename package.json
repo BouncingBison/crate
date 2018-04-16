@@ -24,17 +24,20 @@
     },
     "homepage": "https://github.com/BouncingBison/crate#readme",
     "dependencies": {
+        "body-parser": "^1.18.2",
         "express": "^4.16.3",
+        "express-handlebars": "^3.0.0",
         "formidable": "^1.2.1",
         "gridform": "^0.1.7",
         "gridfs": "^1.0.0",
         "gridfs-stream": "^1.1.1",
-        "mongo": "^0.1.0",
-        "mongodb": "^2.2.33",
+        "handlebars": "^4.0.11",
+        "mongodb": "^3.0.5",
         "mongoose": "^5.0.12",
         "mongoose-gridfs": "^0.3.2",
         "multer": "^1.3.0",
         "nodemon": "^1.17.2",
+        "path": "^0.12.7",
         "stream": "0.0.2",
         "underscore": "^1.8.3"
     }

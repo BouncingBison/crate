@@ -1,0 +1,153 @@
+COL
+
+Collection {
+    s: {
+        pkFactory: {
+            [Function: ObjectID]
+            index: 829240,
+            createPk: [Function: createPk],
+            createFromTime: [Function: createFromTime],
+            createFromHexString: [Function: createFromHexString],
+            isValid: [Function: isValid],
+            ObjectID: [Circular],
+            ObjectId: [Circular]
+        },
+        db: Db {
+            domain: null,
+            _events: {},
+            _eventsCount: 0,
+            _maxListeners: undefined,
+            s: [Object],
+            serverConfig: [Getter],
+            bufferMaxEntries: [Getter],
+            databaseName: [Getter]
+        },
+        topology: Server {
+            domain: null,
+            _events: [Object],
+            _eventsCount: 22,
+            _maxListeners: Infinity,
+            clientInfo: [Object],
+            s: [Object]
+        },
+        dbName: 'crate',
+        options: {
+            promiseLibrary: [Function: Promise],
+            readConcern: undefined,
+            readPreference: [Object]
+        },
+        namespace: 'crate.user1',
+        readPreference: ReadPreference { mode: 'primary', tags: undefined, options: undefined },
+        slaveOk: true,
+        serializeFunctions: undefined,
+        raw: undefined,
+        promoteLongs: undefined,
+        promoteValues: undefined,
+        promoteBuffers: undefined,
+        internalHint: null,
+        collectionHint: null,
+        name: 'user1',
+        promiseLibrary: [Function: Promise],
+        readConcern: undefined
+    }
+}
+
+
+===
+=== === === === === === === === === === === === === === === === === === === ==
+
+DB
+
+Db {
+    domain: null,
+    _events: {},
+    _eventsCount: 0,
+    _maxListeners: undefined,
+    s: {
+        databaseName: 'crate',
+        dbCache: {},
+        children: [],
+        topology: Server {
+            domain: null,
+            _events: [Object],
+            _eventsCount: 22,
+            _maxListeners: Infinity,
+            clientInfo: [Object],
+            s: [Object]
+        },
+        options: {
+            readPreference: [Object],
+            promiseLibrary: [Function: Promise]
+        },
+        logger: Logger { className: 'Db' },
+        bson: BSON {},
+        readPreference: ReadPreference { mode: 'primary', tags: undefined, options: undefined },
+        bufferMaxEntries: -1,
+        parentDb: null,
+        pkFactory: undefined,
+        nativeParser: undefined,
+        promiseLibrary: [Function: Promise],
+        noListener: false,
+        readConcern: undefined
+    },
+    serverConfig: [Getter],
+    bufferMaxEntries: [Getter],
+    databaseName: [Getter]
+}
+
+===
+=== === === === === === === === === === === === === === === === === === =
+
+USERNAME
+
+Collection {
+    s: {
+        pkFactory: {
+            [Function: ObjectID]
+            index: 829244,
+            createPk: [Function: createPk],
+            createFromTime: [Function: createFromTime],
+            createFromHexString: [Function: createFromHexString],
+            isValid: [Function: isValid],
+            ObjectID: [Circular],
+            ObjectId: [Circular]
+        },
+        db: Db {
+            domain: null,
+            _events: {},
+            _eventsCount: 0,
+            _maxListeners: undefined,
+            s: [Object],
+            serverConfig: [Getter],
+            bufferMaxEntries: [Getter],
+            databaseName: [Getter]
+        },
+        topology: Server {
+            domain: null,
+            _events: [Object],
+            _eventsCount: 22,
+            _maxListeners: Infinity,
+            clientInfo: [Object],
+            s: [Object]
+        },
+        dbName: 'crate',
+        options: {
+            promiseLibrary: [Function: Promise],
+            readConcern: undefined,
+            readPreference: [Object]
+        },
+        namespace: 'crate.user1',
+        readPreference: ReadPreference { mode: 'primary', tags: undefined, options: undefined },
+        slaveOk: true,
+        serializeFunctions: undefined,
+        raw: undefined,
+        promoteLongs: undefined,
+        promoteValues: undefined,
+        promoteBuffers: undefined,
+        internalHint: null,
+        collectionHint: null,
+        name: 'user1',
+        promiseLibrary: [Function: Promise],
+        readConcern: undefined
+    }
+}
