@@ -10,20 +10,20 @@ var app = express();
 var uploadEngine = express.Router();
 var fs = require('fs');
 var util = require('util');
-var mongodb = require('mongodb'),
-    MongoClient = require('mongodb').MongoClient,
-    Server = require('mongodb').Server,
-    // ReplSetServers = require('mongodb').ReplSetServers,
-    ObjectID = require('mongodb').ObjectID,
-    Binary = require('mongodb').Binary,
-    // GridStore = require('mongodb').GridStore,
-    GridFSBucket = require('mongodb').GridFSBucket,
-    Code = require('mongodb').Code,
-    // Grid = require('gridfs-stream'),
-    gridform = require('gridform'),
-    assert = require('assert'),
-    mongoURI = 'mongodb://crateTest:password@ds125489.mlab.com:25489/crate',
-    test = require('assert');
+// var mongodb = require('mongodb'),
+//     MongoClient = require('mongodb').MongoClient,
+//     Server = require('mongodb').Server,
+//     // ReplSetServers = require('mongodb').ReplSetServers,
+//     ObjectID = require('mongodb').ObjectID,
+//     Binary = require('mongodb').Binary,
+//     // GridStore = require('mongodb').GridStore,
+var GridFSBucket = require('mongodb').GridFSBucket;
+//     Code = require('mongodb').Code,
+//     // Grid = require('gridfs-stream'),
+//     gridform = require('gridform'),
+//     assert = require('assert'),
+//     mongoURI = 'mongodb://crateTest:password@ds125489.mlab.com:25489/crate',
+//     test = require('assert');
 
 
 // ======================== express routing code =============================
@@ -63,19 +63,55 @@ however formidable has been updated (slightly)
  "raw": "formidable@1.0.14"
  */
 
-// // Database Name
-// const dbName = 'crate';
-// const testUsername = 'user1';
+var connection = require('./testApp.js');
+// console.log(connection);
+
+// var db = connection.getDb();
+
+connection.openConnection(function() {
+    console.log("ahhasifnao")
 
 
-// next step with this is to modularize the whole connection in order to 
-// make a db object accessible to 
-var db = require('./mongoObject.js');
+})
 
 
-db.startup()
-    // db.toString();
 
+
+
+
+
+
+
+
+function openUp() {
+
+
+
+}
+
+
+
+
+// connection.openConnection(function() {
+
+
+
+//     console.log("jbfjabsfbas");
+//     // console.log(_db);
+//     // var db = connection.getDb();
+//     // db()
+//     // console.log(db);
+//     // upload();
+
+
+// });
+
+
+// connection.getDb(function() {
+//     console.log("sup!");
+// });
+
+// upload()
 
 var ct = './ct.mp3';
 // function makeStrings() {
@@ -87,8 +123,7 @@ var ct = './ct.mp3';
 
 
 
-function upload(db, ct) {
-
+function upload(connection, ct) {
 
     // db = db.client.db(dbName);
 
@@ -119,57 +154,56 @@ function upload(db, ct) {
 
 }
 
-upload(db, ct);
 
 
-// // binding the upload URL to the Express Router 
-// app.use("/upload", uploadEngine);
-// // console.log("GLOBAL", MongoClient);
-// // Reuse database object in request handlers
-// app.get("/", function(req, res, db) {
-
-
-
-
-// });
+// // // binding the upload URL to the Express Router 
+// // app.use("/upload", uploadEngine);
+// // // console.log("GLOBAL", MongoClient);
+// // // Reuse database object in request handlers
+// // app.get("/", function(req, res, db) {
 
 
 
-app.post('/upload', function(req, res, connection) {
 
-    var something = new MongoClient();
+// // });
 
-    // assuming you've already created a db instance and opened it
-    gridform.db = something.db;
-    gridform.mongo = mongo;
 
-    // create a gridform
-    var form = gridform();
 
-    // returns a custom IncomingForm
-    assert(form instanceof formidable.IncomingForm);
+// app.post('/upload', function(req, res, connection) {
 
-    // optionally store per-file metadata
-    form.on('fileBegin', function(name, file) {
-        file.metadata = 'so meta'
-    })
+//     var something = new MongoClient();
 
-    // parse normally
-    form.parse(req, function(err, fields, files) {
-        // use files and fields as you do today
-        var file = files.upload;
-        file.name // the uploaded file name
-        file.type // file type per [mime](https://github.com/bentomas/node-mime)
-        file.size // uploaded file size (file length in GridFS) named "size" for compatibility
-        file.path // same as file.name. included for compatibility
-        file.lastModified // included for compatibility
-            // files contain additional gridfs info
-        file.root // the root of the files collection used in MongoDB ('fs' here means the full collection in mongo is named 'fs.files')
-        file.id // the ObjectId for this file
-        console.log("the file -->  " + file);
-    });
+//     // assuming you've already created a db instance and opened it
+//     gridform.db = something.db;
+//     gridform.mongo = mongo;
 
-})
+//     // create a gridform
+//     var form = gridform();
+
+//     // returns a custom IncomingForm
+//     assert(form instanceof formidable.IncomingForm);
+
+//     // optionally store per-file metadata
+//     form.on('fileBegin', function(name, file) {
+//         file.metadata = 'so meta'
+//     })
+
+//     // parse normally
+//     form.parse(req, function(err, fields, files) {
+//         // use files and fields as you do today
+//         var file = files.upload;
+//         file.name // the uploaded file name
+//         file.type // file type per [mime](https://github.com/bentomas/node-mime)
+//         file.size // uploaded file size (file length in GridFS) named "size" for compatibility
+//         file.path // same as file.name. included for compatibility
+//         file.lastModified // included for compatibility
+//             // files contain additional gridfs info
+//         file.root // the root of the files collection used in MongoDB ('fs' here means the full collection in mongo is named 'fs.files')
+//         file.id // the ObjectId for this file
+//         console.log("the file -->  " + file);
+//     });
+
+// })
 
 
 
