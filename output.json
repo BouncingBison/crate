@@ -1,93 +1,206 @@
- GridFSBucketWriteStream {
-     bucket: GridFSBucket {
-         domain: null,
-         _events: {},
-         _eventsCount: 0,
-         _maxListeners: 0,
-         s: {
-             db: [Object],
-             options: [Object],
-             _chunksCollection: [Object],
-             _filesCollection: [Object],
-             checkedIndexes: false,
-             calledOpenUploadStream: true,
-             promiseLibrary: [Function: Promise]
-         }
-     },
-     chunks: Collection {
-         s: {
-             pkFactory: [Object],
-             db: [Object],
-             topology: [Object],
-             dbName: 'trackDB',
-             options: [Object],
-             namespace: 'trackDB.tracks.chunks',
-             readPreference: [Object],
-             slaveOk: true,
-             serializeFunctions: undefined,
-             raw: undefined,
-             promoteLongs: undefined,
-             promoteValues: undefined,
-             promoteBuffers: undefined,
-             internalHint: null,
-             collectionHint: null,
-             name: 'tracks.chunks',
-             promiseLibrary: [Function: Promise],
-             readConcern: undefined
-         }
-     },
-     filename: ['dedication', 'king', 'boyz', 'motivation'],
-     files: Collection {
-         s: {
-             pkFactory: [Object],
-             db: [Object],
-             topology: [Object],
-             dbName: 'trackDB',
-             options: [Object],
-             namespace: 'trackDB.tracks.files',
-             readPreference: [Object],
-             slaveOk: true,
-             serializeFunctions: undefined,
-             raw: undefined,
-             promoteLongs: undefined,
-             promoteValues: undefined,
-             promoteBuffers: undefined,
-             internalHint: null,
-             collectionHint: null,
-             name: 'tracks.files',
-             promiseLibrary: [Function: Promise],
-             readConcern: undefined
-         }
-     },
-     options: { chunkSizeBytes: 261120 },
-     done: false,
-     id: 5 a8a21a92b7d70cdbd5c9418,
-     chunkSizeBytes: 261120,
-     bufToStore: < Buffer 00 e0 d2 01 01 00 00 00 e0 0e 04 00 00 00 00 00 7 f 00 00 00 00 00 00 00 07 00 00 00 01 00 00 00 28 00 d5 01 01 00 00 00 00 00 00 00 00 00 00 00 db ff... > ,
-     length: 0,
-     md5: Hash {
-         _handle: {},
-         _options: undefined,
-         writable: true,
-         readable: true
-     },
-     n: 0,
-     pos: 0,
-     state: {
-         streamEnd: false,
-         outstandingRequests: 0,
-         errored: false,
-         aborted: false,
-         promiseLibrary: [Function: Promise]
-     },
-     _events: {
-         unpipe: [Function: onunpipe],
-         drain: [Function],
-         error: [Function: onerror],
-         close: {
-             [Function: g] listener: [Function: onclose] },
-         finish: {
-             [Function: g] listener: [Function: onfinish] }
-     },
-     _eventsCount: 5
- }
+Cursor {
+    pool: null,
+    server: null,
+    disconnectHandler: Store {
+        s: { storedOps: [], storeOptions: [Object], topology: [Object] },
+        length: [Getter]
+    },
+    bson: BSON {},
+    ns: 'crate.user2.files',
+    cmd: {
+        find: 'crate.user2.files',
+        limit: 0,
+        skip: 0,
+        query: {},
+        readPreference: ReadPreference { mode: 'primary', tags: undefined, options: undefined },
+        slaveOk: true
+    },
+    options: {
+        readPreference: ReadPreference { mode: 'primary', tags: undefined, options: undefined },
+        skip: 0,
+        limit: 0,
+        raw: undefined,
+        hint: null,
+        timeout: undefined,
+        slaveOk: true,
+        db: Db {
+            domain: null,
+            _events: {},
+            _eventsCount: 0,
+            _maxListeners: undefined,
+            s: [Object],
+            serverConfig: [Getter],
+            bufferMaxEntries: [Getter],
+            databaseName: [Getter]
+        },
+        promiseLibrary: [Function: Promise],
+        disconnectHandler: Store { s: [Object], length: [Getter] },
+        topology: Server {
+            domain: null,
+            _events: [Object],
+            _eventsCount: 22,
+            _maxListeners: Infinity,
+            clientInfo: [Object],
+            s: [Object]
+        }
+    },
+    topology: Server {
+        domain: null,
+        _events: {
+            serverOpening: [Function],
+            serverDescriptionChanged: [Function],
+            serverHeartbeatStarted: [Function],
+            serverHeartbeatSucceeded: [Function],
+            serverHeartbeatFailed: [Function],
+            serverClosed: [Function],
+            topologyOpening: [Function],
+            topologyClosed: [Function],
+            topologyDescriptionChanged: [Function],
+            joined: [Function],
+            left: [Function],
+            ping: [Function],
+            ha: [Function],
+            authenticated: [Function],
+            error: [Object],
+            timeout: [Object],
+            close: [Object],
+            parseError: [Object],
+            open: [Object],
+            fullsetup: [Object],
+            all: [Object],
+            reconnect: [Object]
+        },
+        _eventsCount: 22,
+        _maxListeners: Infinity,
+        clientInfo: {
+            driver: [Object],
+            os: [Object],
+            platform: 'Node.js v6.11.2, LE'
+        },
+        s: {
+            coreTopology: [Object],
+            sCapabilities: [Object],
+            clonedOptions: [Object],
+            reconnect: true,
+            emitError: true,
+            poolSize: 5,
+            storeOptions: [Object],
+            store: [Object],
+            host: 'ds125489.mlab.com',
+            port: 25489,
+            options: [Object],
+            sessionPool: [Object],
+            sessions: [],
+            promiseLibrary: [Function: Promise]
+        }
+    },
+    cursorState: {
+        cursorId: null,
+        cmd: {
+            find: 'crate.user2.files',
+            limit: 0,
+            skip: 0,
+            query: {},
+            readPreference: [Object],
+            slaveOk: true
+        },
+        documents: [],
+        cursorIndex: 0,
+        dead: false,
+        killed: false,
+        init: false,
+        notified: false,
+        limit: 0,
+        skip: 0,
+        batchSize: 1000,
+        currentLimit: 0,
+        transforms: undefined,
+        reconnect: true
+    },
+    logger: Logger { className: 'Cursor' },
+    _readableState: ReadableState {
+        objectMode: true,
+        highWaterMark: 16,
+        buffer: BufferList { head: null, tail: null, length: 0 },
+        length: 0,
+        pipes: null,
+        pipesCount: 0,
+        flowing: null,
+        ended: false,
+        endEmitted: false,
+        reading: false,
+        sync: true,
+        needReadable: false,
+        emittedReadable: false,
+        readableListening: false,
+        resumeScheduled: false,
+        defaultEncoding: 'utf8',
+        ranOut: false,
+        awaitDrain: 0,
+        readingMore: false,
+        decoder: null,
+        encoding: null
+    },
+    readable: true,
+    domain: null,
+    _events: {},
+    _eventsCount: 0,
+    _maxListeners: undefined,
+    s: {
+        numberOfRetries: 5,
+        tailableRetryInterval: 500,
+        currentNumberOfRetries: 5,
+        state: 0,
+        streamOptions: {},
+        bson: BSON {},
+        ns: 'crate.user2.files',
+        cmd: {
+            find: 'crate.user2.files',
+            limit: 0,
+            skip: 0,
+            query: {},
+            readPreference: [Object],
+            slaveOk: true
+        },
+        options: {
+            readPreference: [Object],
+            skip: 0,
+            limit: 0,
+            raw: undefined,
+            hint: null,
+            timeout: undefined,
+            slaveOk: true,
+            db: [Object],
+            promiseLibrary: [Function: Promise],
+            disconnectHandler: [Object],
+            topology: [Object]
+        },
+        topology: Server {
+            domain: null,
+            _events: [Object],
+            _eventsCount: 22,
+            _maxListeners: Infinity,
+            clientInfo: [Object],
+            s: [Object]
+        },
+        topologyOptions: {
+            host: 'ds125489.mlab.com',
+            port: 25489,
+            disconnectHandler: [Object],
+            cursorFactory: [Object],
+            reconnect: true,
+            emitError: true,
+            size: 5,
+            socketOptions: {},
+            socketTimeout: 360000,
+            connectionTimeout: 30000,
+            promiseLibrary: [Function: Promise],
+            clientInfo: [Object],
+            bson: BSON {}
+        },
+        promiseLibrary: [Function: Promise],
+        currentDoc: null,
+        session: undefined
+    },
+    sortValue: undefined
+}

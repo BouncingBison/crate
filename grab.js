@@ -54,7 +54,15 @@ app.get('/grab', function(req, res, next) {
 
     function grabbed(docs) {
 
-        async.each(docs, handling, )
+        async.each(docs, handling, function() {
+
+            console.log("___________________")
+            console.log(payloadArr);
+            console.log(iterationCount);
+            console.log("___________________")
+
+
+        })
 
 
 

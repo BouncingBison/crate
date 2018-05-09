@@ -1,36 +1,50 @@
-// var express    = require('express'                         );
-// var mongoose   = require('mongoose'                        );
-// var Grid       = require('gridfs-stream'                   );
-// var gridform   = require('gridform'                        );
-// var fs         = require('fs'                              );
-// var formidable = require('gridform/node_modules/formidable');
-// var assert     = require('assert'                          );
-var express = require('express');
-var app = express();
-var uploadEngine = express.Router();
-var fs = require('fs');
-var util = require('util');
-// var mongodb = require('mongodb'),
-//     MongoClient = require('mongodb').MongoClient,
-//     Server = require('mongodb').Server,
-//     // ReplSetServers = require('mongodb').ReplSetServers,
-//     ObjectID = require('mongodb').ObjectID,
-//     Binary = require('mongodb').Binary,
-//     // GridStore = require('mongodb').GridStore,
+var app = require('express')();
+var bodyParser = require("body-parser");
+
+// Mongo DB modules 
+var mongodb = require("mongodb");
+var expressMongoDb = require('express-mongo-db');
+var ObjectID = mongodb.ObjectID;
 var GridFSBucket = require('mongodb').GridFSBucket;
-//     Code = require('mongodb').Code,
-//     // Grid = require('gridfs-stream'),
-//     gridform = require('gridform'),
-//     assert = require('assert'),
-//     mongoURI = 'mongodb://crateTest:password@ds125489.mlab.com:25489/crate',
-//     test = require('assert');
+const MongoClient = require('mongodb').MongoClient;
+const assert = require('assert');
+var CONTACTS_COLLECTION = "contacts";
+const MONGO_URI = 'mongodb://crateTest:password@ds125489.mlab.com:25489/crate';
+const dbName = 'crate';
+
+var Grid = require('gridfs-stream');
 
 
-// ======================== express routing code =============================
+
+
+app.use(bodyParser.json());
+
+// Create a database variable outside of the database connection callback to reuse the connection pool in your app.
+var db;
+// Connect to the database before starting the application server.
+mongodb.MongoClient.connect(MONGO_URI, function(err, client) {
+    if (err) {
+        console.log(err);
+        process.exit(1);
+    }
+
+    // Save database object from the callback for reuse.
+    db = client.db();
+    console.log("Database connection ready");
+
+    // Initialize the app.
+    var server = app.listen(process.env.PORT || 8080, function() {
+        var port = server.address().port;
+        console.log("App now running on port", port);
+    });
+});
+
+// =============================== Express things ==================================
+
 var exphbs = require('express-handlebars')
 var path = require('path');
 var bodyParser = require('body-parser')
-
+var express = require('express');
 //For BodyParser
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -47,173 +61,173 @@ app.engine('handlebars', exphbs({
     layoutsDir: path.join(__dirname, 'views/layouts'),
 }));
 app.set('view engine', 'handlebars');
-// ======================== express routing code =============================
 
-var formidable = require('gridform/node_modules/formidable');
+var expressMongoDb = require('express-mongo-db');
+app.use(expressMongoDb(MONGO_URI));
 
+var async = require('async');
 const { Readable } = require('stream');
 
-/*
-gridform uses a specific version of (1.0.14) 
-however formidable has been updated (slightly)
- and i am updated the formidable used in 
- gridform to work with versions of Node 6.x and beyond.
- The original version of formidable used in gridform is listed below and 
- goes within that modules package.json 
- "raw": "formidable@1.0.14"
- */
+// =============================== Grabbing from DB ==================================
 
-var connection = require('./testApp.js');
-// console.log(connection);
+app.get('/grab', function(req, res, next) {
 
-// var db = connection.getDb();
+    req.db // => Db object
 
-connection.openConnection(function() {
-    console.log("ahhasifnao")
+    const collection = db.collection('user2.files');
 
+    const amount = Promise.resolve(function(count) {
 
-})
-
-
-
-
-
-
-
-
-
-
-function openUp() {
-
-
-
-}
-
-
-
-
-// connection.openConnection(function() {
-
-
-
-//     console.log("jbfjabsfbas");
-//     // console.log(_db);
-//     // var db = connection.getDb();
-//     // db()
-//     // console.log(db);
-//     // upload();
-
-
-// });
-
-
-// connection.getDb(function() {
-//     console.log("sup!");
-// });
-
-// upload()
-
-var ct = './ct.mp3';
-// function makeStrings() {
-//     console.log(ct);
-//     ct.toString();
-//     console.log(ct);
-// }
-// makeStrings()
-
-
-
-function upload(connection, ct) {
-
-    // db = db.client.db(dbName);
-
-    console.log("starting bucket");
-    let bucket = new GridFSBucket({
-        bucketName: 'user2'
+        var count = collection.count()
     });
 
+    const tracks = new Promise(function(resolve, reject) {
+            resolve(collection.find({}).toArray(function(err, tracks) {
+                assert.equal(err, null);
+                grabbed(tracks);
+                // console.log(tracks);
 
-    const readableTrackStream = new Readable();
-    readableTrackStream.push(ct);
-    readableTrackStream.push(null);
+            }))
 
-    let uploadStream = bucket.openUploadStream(ct);
-    readableTrackStream.pipe(uploadStream)
+        })
+        // promise.all iterable with values
+        // Promise.all([amount, tracks]).then(function(amount, tracks) {
+    Promise.all([]).then(function(count, tracks) {
+        console.log(count)
+        console.log("all");
+    });
 
-    uploadStream.on('data', (chunk) => {
-        console.log('data')
-    })
+    function grabbed(tracks) {
+        console.log("_______Tracks_______");
+        console.log(tracks);
+        console.log("___________________");
 
-    uploadStream.on('error', (chunk) => {
-        console.log('err');
-    })
-
-    uploadStream.on('end', () => {
-        console.log('end');
-    })
-
-}
-
-
-
-// // // binding the upload URL to the Express Router 
-// // app.use("/upload", uploadEngine);
-// // // console.log("GLOBAL", MongoClient);
-// // // Reuse database object in request handlers
-// // app.get("/", function(req, res, db) {
-
-
-
-
-// // });
-
-
-
-// app.post('/upload', function(req, res, connection) {
-
-//     var something = new MongoClient();
-
-//     // assuming you've already created a db instance and opened it
-//     gridform.db = something.db;
-//     gridform.mongo = mongo;
-
-//     // create a gridform
-//     var form = gridform();
-
-//     // returns a custom IncomingForm
-//     assert(form instanceof formidable.IncomingForm);
-
-//     // optionally store per-file metadata
-//     form.on('fileBegin', function(name, file) {
-//         file.metadata = 'so meta'
-//     })
-
-//     // parse normally
-//     form.parse(req, function(err, fields, files) {
-//         // use files and fields as you do today
-//         var file = files.upload;
-//         file.name // the uploaded file name
-//         file.type // file type per [mime](https://github.com/bentomas/node-mime)
-//         file.size // uploaded file size (file length in GridFS) named "size" for compatibility
-//         file.path // same as file.name. included for compatibility
-//         file.lastModified // included for compatibility
-//             // files contain additional gridfs info
-//         file.root // the root of the files collection used in MongoDB ('fs' here means the full collection in mongo is named 'fs.files')
-//         file.id // the ObjectId for this file
-//         console.log("the file -->  " + file);
-//     });
-
-// })
-
-
-
-app.use(function(req, res, next) {
-    res.status(404).send("Can not find page")
-});
-
-app.listen(5000, function(err) {
-    if (!err)
-        console.log("Navigate to localhost:5000");
-    else console.log(err)
+        res.render("list", { tracks: tracks })
+    }
 
 });
+// =============================== Uploading to DB ==================================
+app.post('/upload', function(req, res, next) {
+
+        req.db // => Db object
+        res.set('content-type', 'audio/mp3');
+        res.set('accept-ranges', 'bytes');
+
+
+        var files = './newCT.mp3';
+
+
+        const collection = db.collection('user2.files');
+
+
+
+        upload(db, files);
+
+        function upload(db, files) {
+
+            console.log("starting bucket");
+
+            // db = db.client.db(dbName);
+            var gfs = Grid(db, mongo);
+
+            // streaming to gridfs
+            var writestream = gfs.createWriteStream({
+                filename: './newCT.mp3'
+            });
+
+            // this uses fs to create a read stream of a file and then that is piped to write stream 
+            fs.createReadStream('./newCT.mp3').pipe(writestream);
+
+            //error handling, e.g. file does not exist
+            readstream.on('error', function(err) {
+                console.log('An error occurred!', err);
+                throw err;
+            });
+
+            // readstream.pipe(response);
+
+            // let bucket = new crate.GridFSBucket(db, {
+            //     bucketName: 'user2'
+            // // });
+
+            // const readableTrackStream = new Readable();
+            // readableTrackStream.push(files);
+            // readableTrackStream.push(null);
+
+            // let uploadStream = bucket.openUploadStream(files);
+            // readableTrackStream.pipe(uploadStream)
+
+            writestream.on('data', (chunk) => {
+                console.log('data')
+            })
+
+            writestream.on('error', (chunk) => {
+                console.log('err');
+            })
+
+            writestream.on('end', () => {
+                console.log('end');
+            })
+
+            // res.render("list", { bucket: bucket })
+
+        }
+
+    })
+    // =============================== /Grabbing from DB ==================================
+
+
+
+// // Classical Prototypal 
+// var track = {
+//     title: "human ",
+//     create: function(values) {
+//         var instance = Object.create(this);
+//         Object.keys(values).forEach(function(key) {
+//         })
+//         return instance;
+//     },
+//     saySpecies: function() {
+//         console.log(this);
+//     }
+// };
+
+// console.log(payload.id);
+// console.log(payload.filename);
+// console.log(payload.uploadDate);
+// async.each(tracks, handling, function() {
+//     Object.assign(tracksPayload, tracks)
+//     function DisplayListTrack(trackId, databaseId, name, added, size) {
+//         this.trackId = gen.next();
+//         this.databaseId = databaseId;
+//         this.name = name;
+//         this.added = added;
+//         this.size = size;
+//         this.showStats = function() {
+//             console.log(this);
+//         }
+//     }
+//     var handoff = new DisplayListTrack(trackId, docs._id, docs.filename, docs.uploadDate, docs.size);
+//     handling(parsedDocs)
+// });
+// var handling = function(parsedDocs) {
+//     console.log(parsedDocs);
+//     function* buildTrackId() {
+//         var index = 0;
+//         while (true)
+//             yield index++;
+//     }
+//     var gen = buildTrackId();
+//     var userList = [];
+//     console.log("___________________")
+//     console.log(gen.next().value);
+// var finishedProd = userList.push(handoff);
+// }
+
+// var tracks = tracks[0];
+// var payload = {
+//     id: tracks._id,
+//     name: tracks._filename
+//         // date: tracks.uploadDate
+// };
+// toObject()
