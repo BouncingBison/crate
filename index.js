@@ -2,16 +2,17 @@ var app = require('express')();
 var bodyParser = require("body-parser");
 
 // Mongo DB modules 
-var mongodb = require("mongodb");
+var mongo = require("mongodb");
 var expressMongoDb = require('express-mongo-db');
-var ObjectID = mongodb.ObjectID;
+var ObjectID = require('mongodb').ObjectID;
 var GridFSBucket = require('mongodb').GridFSBucket;
 const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
 var CONTACTS_COLLECTION = "contacts";
 const MONGO_URI = 'mongodb://crateTest:password@ds125489.mlab.com:25489/crate';
 const dbName = 'crate';
-
+const fs = require('fs');
+var sanitizer = require('sanitizer');
 var Grid = require('gridfs-stream');
 
 
@@ -22,7 +23,7 @@ app.use(bodyParser.json());
 // Create a database variable outside of the database connection callback to reuse the connection pool in your app.
 var db;
 // Connect to the database before starting the application server.
-mongodb.MongoClient.connect(MONGO_URI, function(err, client) {
+mongo.MongoClient.connect(MONGO_URI, function(err, client) {
     if (err) {
         console.log(err);
         process.exit(1);
@@ -70,42 +71,135 @@ const { Readable } = require('stream');
 
 // =============================== Grabbing from DB ==================================
 
+
 app.get('/grab', function(req, res, next) {
+
+
+    res.render("list")
+
+
+});
+
+
+
+app.get('/grab/:username', function(req, res, next) {
+
+    // var username = req.params.username;
+    var username = sanitizer.escape(req.params.username);
+
+    console.log(typeof username);
 
     req.db // => Db object
 
-    const collection = db.collection('user2.files');
+    if (username) {
 
-    const amount = Promise.resolve(function(count) {
+        const collection = db.collection(username + ".files");
+        console.log(collection);
 
-        var count = collection.count()
-    });
-
-    const tracks = new Promise(function(resolve, reject) {
+        const tracks = new Promise(function(resolve, reject) {
             resolve(collection.find({}).toArray(function(err, tracks) {
                 assert.equal(err, null);
+
                 grabbed(tracks);
+
                 // console.log(tracks);
-
             }))
-
         })
-        // promise.all iterable with values
-        // Promise.all([amount, tracks]).then(function(amount, tracks) {
-    Promise.all([]).then(function(count, tracks) {
-        console.log(count)
-        console.log("all");
-    });
 
-    function grabbed(tracks) {
-        console.log("_______Tracks_______");
-        console.log(tracks);
-        console.log("___________________");
+    } else {
 
-        res.render("list", { tracks: tracks })
+        console.log('waiting')
+
+
     }
 
+    function grabbed(tracks) {
+
+        console.log("_______Tracks_______");
+        console.log('success');
+        console.log(tracks);
+        console.log("___________________");
+        res.render("list", { tracks: tracks });
+
+    }
+
+    // var username = request.params.username;
+    // findUserByUsername(username, function(error, user) {
+    //     if (error) return next(error);
+
+    //     return response.render('user', user);
+    // });
+
 });
+
+
+// it may be possible to remove this 
+app.post('/grab/:username', function(req, res, next) {
+
+
+    var username = sanitizer.escape(req.body.username);
+
+    // defining this variable as our URL variable
+    var urlUsername = req.params.username;
+
+    // var username = req.params.username;
+
+    // setting our URL with our form data
+    var urlUsername = username;
+
+    console.log(req.params.username)
+    console.log('URLUSERNAME', urlUsername)
+
+
+    console.log(typeof username);
+
+    req.db // => Db object
+
+    if (username) {
+
+        const collection = db.collection(username + ".files");
+
+        const tracks = new Promise(function(resolve, reject) {
+            resolve(collection.find({}).toArray(function(err, tracks) {
+                assert.equal(err, null);
+
+                grabbed(tracks, urlUsername);
+
+                // console.log(tracks);
+            }))
+        })
+
+    } else {
+
+        console.log('waiting')
+
+
+    }
+
+    function grabbed(tracks, urlUsername) {
+
+        console.log("_______Tracks_______");
+        console.log('success');
+        console.log(tracks.length);
+        console.log("___________________");
+        res.render("list", { tracks: tracks });
+        // res.redirect("/grab" + urlUsername, { tracks: tracks });
+
+    }
+
+
+
+    // var username = request.params.username;
+    // findUserByUsername(username, function(error, user) {
+    //     if (error) return next(error);
+
+    //     return response.render('user', user);
+    // });
+
+});
+
+
+
 // =============================== Uploading to DB ==================================
 app.post('/upload', function(req, res, next) {
 
@@ -113,13 +207,7 @@ app.post('/upload', function(req, res, next) {
         res.set('content-type', 'audio/mp3');
         res.set('accept-ranges', 'bytes');
 
-
-        var files = './newCT.mp3';
-
-
-        const collection = db.collection('user2.files');
-
-
+        var files = req.audio;
 
         upload(db, files);
 
@@ -127,55 +215,63 @@ app.post('/upload', function(req, res, next) {
 
             console.log("starting bucket");
 
-            // db = db.client.db(dbName);
-            var gfs = Grid(db, mongo);
+            // var gfs = Grid(db, mongo);
+            // // streaming to gridfs
+            // var writestream = gfs.createWriteStream({
+            //     filename: './bla.mp3'
+            // });
+            // this uses fs to create a read stream of a file and then that is piped to write stream
+            // gfs.createReadStream(files).pipe(writestream);
 
-            // streaming to gridfs
-            var writestream = gfs.createWriteStream({
-                filename: './newCT.mp3'
+            const readableTrackStream = new Readable();
+
+
+            let bucket = new mongo.GridFSBucket(db, {
+                bucketName: 'user4'
             });
 
-            // this uses fs to create a read stream of a file and then that is piped to write stream 
-            fs.createReadStream('./newCT.mp3').pipe(writestream);
+            readableTrackStream.push(files);
+            readableTrackStream.push(null);
 
             //error handling, e.g. file does not exist
-            readstream.on('error', function(err) {
+            readableTrackStream.on('error', function(err) {
                 console.log('An error occurred!', err);
                 throw err;
             });
 
-            // readstream.pipe(response);
+            let uploadStream = bucket.openUploadStream(files);
 
-            // let bucket = new crate.GridFSBucket(db, {
-            //     bucketName: 'user2'
-            // // });
+            readableTrackStream.pipe(uploadStream)
 
-            // const readableTrackStream = new Readable();
-            // readableTrackStream.push(files);
-            // readableTrackStream.push(null);
 
-            // let uploadStream = bucket.openUploadStream(files);
-            // readableTrackStream.pipe(uploadStream)
-
-            writestream.on('data', (chunk) => {
+            uploadStream.on('data', (chunk) => {
                 console.log('data')
+                console.log(chunk);
             })
 
-            writestream.on('error', (chunk) => {
+            uploadStream.on('error', (chunk) => {
                 console.log('err');
             })
 
-            writestream.on('end', () => {
+            uploadStream.on('end', () => {
                 console.log('end');
             })
 
             // res.render("list", { bucket: bucket })
+
+            res.redirect('/grab');
+
 
         }
 
     })
     // =============================== /Grabbing from DB ==================================
 
+
+
+
+
+// updating 
 
 
 // // Classical Prototypal 
